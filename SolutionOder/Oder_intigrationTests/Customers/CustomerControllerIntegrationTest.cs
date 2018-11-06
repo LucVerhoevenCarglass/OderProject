@@ -26,6 +26,10 @@ namespace Order.IntigrationTests.Customers
                 .UseStartup<Startup>());
             _client = _server.CreateClient();
             UsersDatabase.InitDatabase();
+            var adminUsername = UsersDatabase.Users[0].Email;
+            var adminPassword = UsersDatabase.Users[0].Password;
+            _client.DefaultRequestHeaders.Authorization = CreateBasicHeader(adminUsername, adminPassword);
+
             CustomersDatabase.Customers.Clear();
             CustomersDatabase.Customers.Add(new Customer("00001"));
             CustomersDatabase.Customers.Add(new Customer("00002"));
@@ -37,10 +41,6 @@ namespace Order.IntigrationTests.Customers
         [Fact]
         public async Task GetAllCustomers_WhenAdminUser_ThenReturnListOfAllCustomers()
         {
-            var adminUsername = UsersDatabase.Users[0].Email;
-            var adminPassword = UsersDatabase.Users[0].Password;
-            _client.DefaultRequestHeaders.Authorization = CreateBasicHeader(adminUsername, adminPassword);
-       
             var response = await _client.GetAsync("api/Customer");
             var responseString = await response.Content.ReadAsStringAsync();
             var customerList = JsonConvert.DeserializeObject<List<CustomerDtoOverView>>(responseString);
@@ -51,9 +51,6 @@ namespace Order.IntigrationTests.Customers
         [Fact]
         public async Task GetCustomerDetail_WhenSearchCustomerIdAsAdminUser_ThenReturnCustomerInfo()
         {
-            var adminUsername = UsersDatabase.Users[0].Email;
-            var adminPassword = UsersDatabase.Users[0].Password;
-            _client.DefaultRequestHeaders.Authorization = CreateBasicHeader(adminUsername, adminPassword);
             var response = await _client.GetAsync("api/Customer/00002");
             var responseString = await response.Content.ReadAsStringAsync();
             var customerDto = JsonConvert.DeserializeObject<CustomerDtoOverView>(responseString);
@@ -64,9 +61,6 @@ namespace Order.IntigrationTests.Customers
         [Fact]
         public async Task GetCustomerDetail__WhenSearchNonExistingCustomerIdAsAdminUser_ThenReturnBadRequest()
         {
-            var adminUsername = UsersDatabase.Users[0].Email;
-            var adminPassword = UsersDatabase.Users[0].Password;
-            _client.DefaultRequestHeaders.Authorization = CreateBasicHeader(adminUsername, adminPassword);
             var response = await _client.GetAsync("api/Customer/00100");
             Assert.False(response.IsSuccessStatusCode);
         }

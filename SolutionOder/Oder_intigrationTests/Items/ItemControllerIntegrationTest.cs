@@ -30,18 +30,18 @@ namespace Order.IntigrationTests.Items
                 new MediaTypeWithQualityHeaderValue("application/json"));
 
             UsersDatabase.InitDatabase();
+            var adminUsername = UsersDatabase.Users[0].Email;
+            var adminPassword = UsersDatabase.Users[0].Password;
+            _client.DefaultRequestHeaders.Authorization = CreateBasicHeader(adminUsername, adminPassword);
+
             ItemsDatabase.Items.Clear();
             ItemsDatabase.Items.Add(new Item() {Name = "ProdExisting"});
         }
 
 
         [Fact]
-        public void CreateNewItem_WhenAdminUserAddNonExistingItem_ThenReturnSuccess()
-        {
-            var adminUsername = UsersDatabase.Users[0].Email;
-            var adminPassword = UsersDatabase.Users[0].Password;
-            _client.DefaultRequestHeaders.Authorization = CreateBasicHeader(adminUsername, adminPassword);
-            
+        public async Task CreateNewItem_WhenAdminUserAddNonExistingItem_ThenReturnSuccess()
+        {          
             ItemDtoToCreate itemToCreate = new ItemDtoToCreate()
             {
                 Name="NewProduce",
@@ -50,20 +50,18 @@ namespace Order.IntigrationTests.Items
             var content = JsonConvert.SerializeObject(itemToCreate);
             var stringContent = new StringContent(content, Encoding.UTF8, "application/json");
 
-            Task<HttpResponseMessage> response = _client.PostAsync("api/item", stringContent);
-            var result = response.Result;
-
-            Assert.True(result.IsSuccessStatusCode);
+            var response = await _client.PostAsync("api/item", stringContent);
+            Assert.True(response.IsSuccessStatusCode);
             Assert.Equal(2, ItemsDatabase.Items.Count);
+
+            //Task<HttpResponseMessage> response = _client.PostAsync("api/item", stringContent);
+            //var result = response.Result;
+            //Assert.True(result.IsSuccessStatusCode);
         }
 
         [Fact]
         public async Task CreateNewItem_WhenAdminUserAddExistingItem_ThenReturnFalse()
-        {
-            var adminUsername = UsersDatabase.Users[0].Email;
-            var adminPassword = UsersDatabase.Users[0].Password;
-            _client.DefaultRequestHeaders.Authorization = CreateBasicHeader(adminUsername, adminPassword);
-            
+        {          
             ItemDtoToCreate itemToCreate = new ItemDtoToCreate()
             {
                 Name = "ProdExisting",

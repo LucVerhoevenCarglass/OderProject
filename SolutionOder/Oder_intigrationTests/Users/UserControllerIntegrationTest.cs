@@ -27,8 +27,6 @@ namespace Order.IntigrationTests.Users
             _client = _server.CreateClient();
             UsersDatabase.InitDatabase();
             CustomersDatabase.Customers.Clear();
-
-
         }
 
         [Fact]
