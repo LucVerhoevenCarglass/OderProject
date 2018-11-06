@@ -3,19 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2041
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oder_api", "Oder_api\Oder_api.csproj", "{6CB42A8A-0821-46E3-95FB-C0B3708AB68D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Order.Api", "Oder_api\Order.Api.csproj", "{6CB42A8A-0821-46E3-95FB-C0B3708AB68D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oder_api_UnitTests", "Oder_api_UnitTests\Oder_api_UnitTests.csproj", "{8661CC3F-A07F-47F3-A580-D1BED0D5C064}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Order.Api.UnitTests", "Oder_api_UnitTests\Order.Api.UnitTests.csproj", "{8661CC3F-A07F-47F3-A580-D1BED0D5C064}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oder_domain", "Oder_domain\Oder_domain.csproj", "{FCD02942-0681-40BF-A180-856FBB4D31AE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Order.Domain", "Oder_domain\Order.Domain.csproj", "{FCD02942-0681-40BF-A180-856FBB4D31AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oder_intigrationTests", "Oder_intigrationTests\Oder_intigrationTests.csproj", "{8548F1F3-BAC8-429F-8280-C5C0865CA6B8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Order.IntigrationTests", "Oder_intigrationTests\Order.IntigrationTests.csproj", "{8548F1F3-BAC8-429F-8280-C5C0865CA6B8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oder_domain_UnitTests", "Oder_domain_UnitTests\Oder_domain_UnitTests.csproj", "{39D53998-B8C4-4F48-9DEA-018F40112CD9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Order.Domain.UnitTests", "Oder_domain_UnitTests\Order.Domain.UnitTests.csproj", "{39D53998-B8C4-4F48-9DEA-018F40112CD9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oder_services_UnitTests", "Oder_services_UnitTests\Oder_services_UnitTests.csproj", "{2F03B4AB-A1F8-456E-9B0F-6C44F0EFFB26}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Order.Services.UnitTests", "Oder_services_UnitTests\Order.Services.UnitTests.csproj", "{2F03B4AB-A1F8-456E-9B0F-6C44F0EFFB26}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Oder_services", "Oder_services\Oder_services.csproj", "{9C54848F-D82C-4AB7-8F31-22CAFC6D3201}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Order.Services", "Oder_services\Order.Services.csproj", "{9C54848F-D82C-4AB7-8F31-22CAFC6D3201}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Order.Databases", "Oder_databases\Order.Databases.csproj", "{8005B32B-19D0-4CD2-BE18-B9E4ED9BF842}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{9C54848F-D82C-4AB7-8F31-22CAFC6D3201}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9C54848F-D82C-4AB7-8F31-22CAFC6D3201}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9C54848F-D82C-4AB7-8F31-22CAFC6D3201}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8005B32B-19D0-4CD2-BE18-B9E4ED9BF842}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8005B32B-19D0-4CD2-BE18-B9E4ED9BF842}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8005B32B-19D0-4CD2-BE18-B9E4ED9BF842}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8005B32B-19D0-4CD2-BE18-B9E4ED9BF842}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

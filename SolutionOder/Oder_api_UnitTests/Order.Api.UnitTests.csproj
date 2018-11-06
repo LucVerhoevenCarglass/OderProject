@@ -7,14 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="2.1.1" />
+    <PackageReference Include="Divergic.Logging.Xunit" Version="1.1.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.1" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.8.0" />
+    <PackageReference Include="NSubstitute" Version="3.1.0" />
     <PackageReference Include="xunit" Version="2.3.1" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Oder_services\Oder_services.csproj" />
+    <ProjectReference Include="..\Oder_api\Order.Api.csproj" />
+    <ProjectReference Include="..\Oder_domain\Order.Domain.csproj" />
+    <ProjectReference Include="..\Oder_services\Order.Services.csproj" />
   </ItemGroup>
 
 </Project>
