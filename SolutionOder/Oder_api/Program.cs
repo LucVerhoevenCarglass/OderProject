@@ -16,8 +16,9 @@ namespace Order.Api
     {
         public static void Main(string[] args)
         {
-            ItemsDatabase.InitDatabase();
-            CustomersDatabase.InitDatabase();
+            
+ //           ItemsDatabase.InitDatabase();
+ //           CustomersDatabase.InitDatabase();
             var logger = NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
             try
             {

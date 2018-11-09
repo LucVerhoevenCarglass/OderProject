@@ -13,6 +13,8 @@ using Order.Api.Controllers.Items;
 using Order.Api.Controllers.Orders;
 using Order.Databases;
 using Order.Domain.Items;
+using Order.Domain.Orders;
+using Order.Domain.Users;
 
 namespace Order.IntigrationTests.Orders
 {
@@ -20,7 +22,7 @@ namespace Order.IntigrationTests.Orders
     {
         private readonly TestServer _server;
         private readonly HttpClient _client;
-        private readonly string testCustomerId;
+        private readonly string testUserId = "IdCustomer";
 
         public OrderControllerIntegrationTest()
         {
@@ -32,16 +34,10 @@ namespace Order.IntigrationTests.Orders
             _client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
 
-            UsersDatabase.InitDatabase();
-            ItemsDatabase.InitDatabase();
-            CustomersDatabase.InitDatabase();
-            ////OrdersDatabase.Orders.Clear();
+            var customerUsername = "customer@oder.com";
+            var customerPassword = "test";
+           _client.DefaultRequestHeaders.Authorization = CreateBasicHeader(customerUsername, customerPassword);
 
-
-            testCustomerId = UsersDatabase.Users[1].UserId;
-            var customerUsername = UsersDatabase.Users[1].Email;
-            var customerPassword = UsersDatabase.Users[1].Password;
-            _client.DefaultRequestHeaders.Authorization = CreateBasicHeader(customerUsername, customerPassword);
         }
 
 
@@ -63,29 +59,35 @@ namespace Order.IntigrationTests.Orders
             };
             var content = JsonConvert.SerializeObject(itemsToOrder);
             var stringContent = new StringContent(content, Encoding.UTF8, "application/json");
-            var response = await _client.PostAsync($"api/order/{testCustomerId}", stringContent);
+            //int countBefore = await AssertCountTable();
+            var response = await _client.PostAsync($"api/order/{testUserId}", stringContent);
             Assert.True(response.IsSuccessStatusCode);
-            Assert.Single(OrdersDatabase.Orders);
+            int countAfter = await AssertCountTable();
+            Assert.Equal(1, countAfter);
 
-             response = await _client.GetAsync($"api/order/{testCustomerId}");
-             var responseString = await response.Content.ReadAsStringAsync();
-             var orderList = JsonConvert.DeserializeObject<List<OrderDtoDetail>>(responseString);
-             Assert.True(response.IsSuccessStatusCode);
-             Assert.Single(orderList);
+            //response = await _client.GetAsync($"api/order/{testUserId}");
+            //var responseString = await response.Content.ReadAsStringAsync();
+            //var orderList = JsonConvert.DeserializeObject<List<OrderDtoDetail>>(responseString);
+            // Assert.True(response.IsSuccessStatusCode);
+            // Assert.Single(orderList);
         }
 
         [Fact]
         public async Task GetOrdersForCustomer_WhenAskOrdersAndNoOrdersFound_ThenBadRequest()
         {
-            var response = await _client.GetAsync($"api/order/{testCustomerId}");
+            var response = await _client.GetAsync($"api/order/{testUserId}");
             var responseString = await response.Content.ReadAsStringAsync();
             Assert.False(response.IsSuccessStatusCode);
             Assert.Contains("No Orders Found for CustomerId", responseString);
-
         }
 
-
-
+        private async Task<int> AssertCountTable()
+        {
+            var response = await _client.GetAsync($"api/order/{testUserId}");
+            var responseString = await response.Content.ReadAsStringAsync();
+            var list = JsonConvert.DeserializeObject<List<OrderDtoDetail>>(responseString);
+            return list.Count;
+        }
 
 
         private AuthenticationHeaderValue CreateBasicHeader(string username, string password)

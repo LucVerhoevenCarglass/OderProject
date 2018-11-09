@@ -11,34 +11,26 @@ namespace Order.Services.Customers
     {
         private const string ErrorMessage = "CustomerModule : ";
         private readonly ILogger<CustomerService> _logger;
+        private readonly ICustomersDatabase _customersDatabase;
 
-        public CustomerService(ILogger<CustomerService> logger)
+        public CustomerService(ILogger<CustomerService> logger, ICustomersDatabase customersDatabase)
         {
             _logger = logger;
+            _customersDatabase = customersDatabase;
         }
         public void CreateNewCustomer(Customer customerToCreate)
         {
-            if (CustomersDatabase.Customers.Any(cust => cust.CustomerId == customerToCreate.CustomerId))
-            {
-                _logger.LogError($"{ErrorMessage} Id already exists: { customerToCreate.CustomerId}");
-                throw new OrderExeptions($"{ErrorMessage} Id already exists");
-            }
-            CustomersDatabase.Customers.Add(customerToCreate);
+            _customersDatabase.AddCustomerIfNotExist(customerToCreate);
         }
 
         public IEnumerable<Customer> GetAllCustomers()
         {
-            return CustomersDatabase.Customers;
+            return _customersDatabase.GetDatabase();
         }
 
         public Customer GetDetailCustomer(string searchId)
         {
-            var findCustomer= CustomersDatabase.Customers.Find(cust => cust.CustomerId == searchId);
-            if (findCustomer==null)
-            {
-                throw new OrderExeptions($"{ErrorMessage} CustomerId {searchId} does not exists");
-            }
-            return findCustomer;
+            return _customersDatabase.GetDetailCustomer(searchId);
         }
     }
 }

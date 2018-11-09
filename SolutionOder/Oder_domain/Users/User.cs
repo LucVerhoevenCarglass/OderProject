@@ -21,9 +21,15 @@ namespace Order.Domain.Users
 
         private const string ErrorMessage = "UserDomain : ";
         private const int MIN_PASSWORD_LENGTH = 8;
-        public User()
+        public User(string userid = null)
         {
-            UserId = Guid.NewGuid().ToString();
+            if (string.IsNullOrEmpty(userid))
+            {
+                UserId = Guid.NewGuid().ToString();
+            }
+            else UserId = userid;
+
+
             UserRole = Roles.Customer;
         }
 

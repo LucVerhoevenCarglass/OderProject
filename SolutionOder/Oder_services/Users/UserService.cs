@@ -15,38 +15,42 @@ namespace Order.Services.Users
     {
         private const string ErrorMessage = "UserService : ";
         private readonly ILogger<UserService> _logger;
+        private readonly IUsersDatabase _usersDatabase;
 
 
-        public UserService(ILogger<UserService> logger)
+        public UserService(ILogger<UserService> logger, IUsersDatabase usersDatabase)
         {
             _logger = logger;
+            _usersDatabase = usersDatabase;
         }
 
         public User CreateNewUser(User userToCreate)
         {
-            if (UsersDatabase.Users.Any(user => user.Email.ToLower() == userToCreate.Email.ToLower()))
-            {
-                _logger.LogError($"{ErrorMessage} Mail already exists: {userToCreate.Email}");
-                throw new OrderExeptions($"{ErrorMessage} Mail already exists");
-            }
-            UsersDatabase.Users.Add(userToCreate);
+            _usersDatabase.AddUserIfNotExist(userToCreate);
+            //if (_usersDatabase.Users.Any(user => user.Email.ToLower() == userToCreate.Email.ToLower()))
+            //{
+            //    _logger.LogError($"{ErrorMessage} Mail already exists: {userToCreate.Email}");
+            //    throw new OrderExeptions($"{ErrorMessage} Mail already exists");
+            //}
+            //_usersDatabase.Users.Add(userToCreate);
             return userToCreate;
         }
 
         public async Task<User> Authenticate(string email, string password)
         {
-            var user = await Task.Run(() => UsersDatabase.Users.SingleOrDefault(login => login.Email == email && login.Password == password));
-            if (user == null)
-            {
-                _logger.LogError($"{ErrorMessage} Mail not yet registered: {email}");
-                return null;
-            }
+            var user = await Task.Run(() => _usersDatabase.CheckUserInDatabase(email, password));
+            //var user = await Task.Run(() => _usersDatabase.Users.SingleOrDefault(login => login.Email == email && login.Password == password));
+            //if (user == null)
+            //{
+            //    _logger.LogError($"{ErrorMessage} Mail not yet registered: {email}");
+            //    return null;
+            //}
             return user;
         }
 
         public IEnumerable<User> GetAllUsers()
         {
-            return UsersDatabase.Users;
+            return _usersDatabase.GetDatabase();
         }
     }
 }

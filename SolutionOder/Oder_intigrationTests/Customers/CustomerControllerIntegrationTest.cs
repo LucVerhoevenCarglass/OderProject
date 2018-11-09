@@ -5,12 +5,16 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Xunit;
 using Order.Api;
 using Order.Api.Controllers.Customers;
 using Order.Databases;
 using Order.Domain.Customers;
+using Order.Domain.Users;
+using NLog;
+using NSubstitute;
 
 namespace Order.IntigrationTests.Customers
 {
@@ -23,20 +27,13 @@ namespace Order.IntigrationTests.Customers
         {
             // Arrange
             _server = new TestServer(new WebHostBuilder()
-                .UseStartup<Startup>());
+                            .UseStartup<Startup>());
             _client = _server.CreateClient();
-            UsersDatabase.InitDatabase();
-            var adminUsername = UsersDatabase.Users[0].Email;
-            var adminPassword = UsersDatabase.Users[0].Password;
+
+            var adminUsername = "admin@oder.com";
+            var adminPassword = "admin";
             _client.DefaultRequestHeaders.Authorization = CreateBasicHeader(adminUsername, adminPassword);
-
-            CustomersDatabase.Customers.Clear();
-            CustomersDatabase.Customers.Add(new Customer("00001"));
-            CustomersDatabase.Customers.Add(new Customer("00002"));
-            CustomersDatabase.Customers.Add(new Customer("00003"));
-            CustomersDatabase.Customers.Add(new Customer("00004"));
         }
-
 
         [Fact]
         public async Task GetAllCustomers_WhenAdminUser_ThenReturnListOfAllCustomers()
@@ -45,17 +42,17 @@ namespace Order.IntigrationTests.Customers
             var responseString = await response.Content.ReadAsStringAsync();
             var customerList = JsonConvert.DeserializeObject<List<CustomerDtoOverView>>(responseString);
             Assert.True(response.IsSuccessStatusCode);
-            Assert.Equal(4, customerList.Count);
+            Assert.Single(customerList);
         }
 
         [Fact]
         public async Task GetCustomerDetail_WhenSearchCustomerIdAsAdminUser_ThenReturnCustomerInfo()
         {
-            var response = await _client.GetAsync("api/Customer/00002");
+            var response = await _client.GetAsync("api/Customer/IdCustomer");
             var responseString = await response.Content.ReadAsStringAsync();
             var customerDto = JsonConvert.DeserializeObject<CustomerDtoOverView>(responseString);
             Assert.True(response.IsSuccessStatusCode);
-            Assert.Equal("00002", customerDto.CustomerId);
+            Assert.Equal("IdCustomer", customerDto.CustomerId);
         }
 
         [Fact]

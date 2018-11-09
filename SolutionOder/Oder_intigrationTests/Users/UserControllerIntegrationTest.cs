@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
@@ -10,7 +10,6 @@ using Newtonsoft.Json;
 using Xunit;
 using Order.Api;
 using Order.Api.Controllers.Users;
-using Order.Databases;
 
 namespace Order.IntigrationTests.Users
 {
@@ -25,8 +24,9 @@ namespace Order.IntigrationTests.Users
             _server = new TestServer(new WebHostBuilder()
                 .UseStartup<Startup>());
             _client = _server.CreateClient();
-            UsersDatabase.InitDatabase();
-            CustomersDatabase.Customers.Clear();
+            var adminUsername = "admin@oder.com";
+            var adminPassword = "admin";
+            _client.DefaultRequestHeaders.Authorization = CreateBasicHeader(adminUsername, adminPassword);
         }
 
         [Fact]
@@ -46,16 +46,19 @@ namespace Order.IntigrationTests.Users
             var content = JsonConvert.SerializeObject(newUser);
             var stringContent = new StringContent(content, Encoding.UTF8, "application/json");
 
-            Assert.Equal(0, UsersDatabase.Users.Count(user => user.Email == "Email@test.com"));
-            Assert.Equal(0, CustomersDatabase.Customers.Count(cust => cust.Email == "Email@test.com"));
+            int countBefore = await AssertCountTable();
 
-
+            var adminUsername = "";
+            var adminPassword = "";
+            _client.DefaultRequestHeaders.Authorization = CreateBasicHeader(adminUsername, adminPassword);
             var response = await _client.PostAsync("/api/user", stringContent);
-
             Assert.True(response.IsSuccessStatusCode);
 
-            Assert.Equal(1, UsersDatabase.Users.Count(user=> user.Email== "Email@test.com"));
-            Assert.Equal(1, CustomersDatabase.Customers.Count(cust => cust.Email == "Email@test.com"));
+            adminUsername = "admin@oder.com";
+            adminPassword = "admin";
+            _client.DefaultRequestHeaders.Authorization = CreateBasicHeader(adminUsername, adminPassword);
+            int countAfter = await AssertCountTable();
+            Assert.Equal(countBefore + 1, countAfter);
         }
 
         [Fact]
@@ -70,11 +73,26 @@ namespace Order.IntigrationTests.Users
             var content = JsonConvert.SerializeObject(newUser);
             var stringContent = new StringContent(content, Encoding.UTF8, "application/json");
 
+            int countBefore = await AssertCountTable();
             var response = await _client.PostAsync("/api/user", stringContent);
 
             Assert.False(response.IsSuccessStatusCode);
+            int countAfter = await AssertCountTable();
+            Assert.Equal(countBefore , countAfter);
+        }
 
-            Assert.Equal(0, UsersDatabase.Users.Count(user => user.Email == "NO EMAIL"));
+        private async Task<int> AssertCountTable()
+        {
+            var response = await _client.GetAsync("api/user");
+            var responseString = await response.Content.ReadAsStringAsync();
+            var list = JsonConvert.DeserializeObject<List<UserDtoOverView>>(responseString);
+            return list.Count;
+        }
+
+        private AuthenticationHeaderValue CreateBasicHeader(string username, string password)
+        {
+            byte[] byteArray = System.Text.Encoding.UTF8.GetBytes(username + ":" + password);
+            return new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
         }
     }
 }

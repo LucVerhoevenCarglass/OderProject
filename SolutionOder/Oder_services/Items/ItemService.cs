@@ -13,19 +13,23 @@ namespace Order.Services.Items
     {
         private const string ErrorMessage = "ItemService : ";
         private readonly ILogger<ItemService> _logger;
-        public ItemService(ILogger<ItemService> logger)
+        private readonly IItemsDatabase _itemsDatabase;
+
+        public ItemService(ILogger<ItemService> logger, IItemsDatabase itemsDatabase)
         {
             _logger = logger;
+            _itemsDatabase = itemsDatabase;
         }
 
         public IEnumerable<Item> GetAllItems()
         {
-            return ItemsDatabase.Items;
+            return _itemsDatabase.GetDatabase();
+
         }
 
         public IEnumerable<Item> GetForSalesItems()
         {
-            return ItemsDatabase.Items.Where(item => 
+            return GetAllItems().Where(item => 
                 item.Status == ItemStatus.Active 
                 || (item.Status == ItemStatus.SellOut && item.StockAmount > 0));
         }
@@ -42,7 +46,7 @@ namespace Order.Services.Items
 
         public void ChangeStock(string itemId, int orderAmount)
         {
-            foreach (var item in ItemsDatabase.Items.Where(item => item.ItemId==itemId))
+            foreach (var item in GetAllItems().Where(item => item.ItemId==itemId))
             {
                 item.StockAmount -= Math.Min(orderAmount, item.StockAmount);
                 item.LastDateSold = DateTime.Today;
@@ -56,12 +60,12 @@ namespace Order.Services.Items
 
         public Item CreateNewItem(Item itemToCreate)
         {
-            if (ItemsDatabase.Items.Any(item => item.Name == itemToCreate.Name)) 
+            if (GetAllItems().Any(item => item.Name == itemToCreate.Name)) 
             {
                 _logger.LogError($"{ErrorMessage} Item  {itemToCreate.Name} already exists ");
                 throw new OrderExeptions($"{ErrorMessage} Item already exists");
             }
-            ItemsDatabase.Items.Add(itemToCreate);
+            _itemsDatabase.AddItem(itemToCreate);
             return itemToCreate;
         }
     }

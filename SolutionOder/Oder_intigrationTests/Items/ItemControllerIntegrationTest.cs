@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -11,6 +12,7 @@ using Order.Api;
 using Order.Api.Controllers.Items;
 using Order.Databases;
 using Order.Domain.Items;
+using Order.Domain.Users;
 
 namespace Order.IntigrationTests.Items
 {
@@ -29,19 +31,19 @@ namespace Order.IntigrationTests.Items
             _client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
 
-            UsersDatabase.InitDatabase();
-            var adminUsername = UsersDatabase.Users[0].Email;
-            var adminPassword = UsersDatabase.Users[0].Password;
+            var adminUsername = "admin@oder.com";
+            var adminPassword = "admin";
             _client.DefaultRequestHeaders.Authorization = CreateBasicHeader(adminUsername, adminPassword);
 
-            ItemsDatabase.Items.Clear();
-            ItemsDatabase.Items.Add(new Item() {Name = "ProdExisting"});
+ //           ItemsDatabase.Items.Clear();
+ //           ItemsDatabase.Items.Add(new Item() {Name = "ProdExisting"});
         }
 
 
         [Fact]
         public async Task CreateNewItem_WhenAdminUserAddNonExistingItem_ThenReturnSuccess()
-        {          
+        {
+            int countBefore = await AssertCountTable();
             ItemDtoToCreate itemToCreate = new ItemDtoToCreate()
             {
                 Name="NewProduce",
@@ -49,22 +51,20 @@ namespace Order.IntigrationTests.Items
             };
             var content = JsonConvert.SerializeObject(itemToCreate);
             var stringContent = new StringContent(content, Encoding.UTF8, "application/json");
-
+            
             var response = await _client.PostAsync("api/item", stringContent);
             Assert.True(response.IsSuccessStatusCode);
-            Assert.Equal(2, ItemsDatabase.Items.Count);
-
-            //Task<HttpResponseMessage> response = _client.PostAsync("api/item", stringContent);
-            //var result = response.Result;
-            //Assert.True(result.IsSuccessStatusCode);
+            int countAfter = await AssertCountTable();
+            Assert.Equal(countBefore+1, countAfter);
         }
 
         [Fact]
         public async Task CreateNewItem_WhenAdminUserAddExistingItem_ThenReturnFalse()
-        {          
+        {
+            int countBefore = await AssertCountTable();
             ItemDtoToCreate itemToCreate = new ItemDtoToCreate()
             {
-                Name = "ProdExisting",
+                Name = "Product1",
                 Description = "NewDescription"
             };
 
@@ -74,15 +74,22 @@ namespace Order.IntigrationTests.Items
             var response = await _client.PostAsync("api/item", stringContent);
 
             Assert.False(response.IsSuccessStatusCode);
-            Assert.Single(ItemsDatabase.Items);
+            int countAfter = await AssertCountTable();
+            Assert.Equal(countBefore, countAfter);
         }
-
-
 
         private AuthenticationHeaderValue CreateBasicHeader(string username, string password)
         {
             byte[] byteArray = System.Text.Encoding.UTF8.GetBytes(username + ":" + password);
             return new AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
+        }
+
+        private async Task<int> AssertCountTable()
+        {
+            var response = await _client.GetAsync("api/item");
+            var responseString = await response.Content.ReadAsStringAsync();
+            var list = JsonConvert.DeserializeObject<List<ItemDtoOverView>>(responseString);
+            return list.Count;
         }
     }
 }

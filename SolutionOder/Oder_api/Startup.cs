@@ -11,6 +11,7 @@ using Order.Api.Controllers.Items;
 using Order.Api.Controllers.Orders;
 using Order.Api.Controllers.Users;
 using Order.Api.Helper;
+using Order.Databases;
 using Order.Services.Customers;
 using Order.Services.Items;
 using Order.Services.Orders;
@@ -31,14 +32,21 @@ namespace Order.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddSingleton<IUsersDatabase, UsersDatabase>();
+            services.AddSingleton<ICustomersDatabase, CustomersDatabase>();
+            services.AddSingleton<IItemsDatabase, ItemsDatabase>();
+            services.AddSingleton<IOrdersDatabase, OrdersDatabase>();
+
             services.AddSingleton<IUserService, UserService>();
             services.AddSingleton<ICustomerService, CustomerService>();
             services.AddSingleton<IItemService, ItemService>();
             services.AddSingleton<IOrderService, OrderService>();
+
             services.AddSingleton<IUserMapper, UserMapper>();
-            services.AddSingleton<IOrderMapper, OrderMapper>();
             services.AddSingleton<ICustomerMapper, CustomerMapper>();
             services.AddSingleton<IItemMapper, ItemMapper>();
+            services.AddSingleton<IOrderMapper, OrderMapper>();
+
 
             services.AddAuthentication("BasicAuthentication")
                 .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);

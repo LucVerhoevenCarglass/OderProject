@@ -22,7 +22,6 @@
     <Folder Include="Customers\" />
     <Folder Include="Items\" />
     <Folder Include="Orders\" />
-    <Folder Include="Users\" />
   </ItemGroup>
 
 </Project>
