@@ -1,4 +1,6 @@
 ﻿using System;
+using NSubstitute;
+using Order_domain;
 using Order_domain.Customers;
 using Order_domain.tests.Customers;
 using Order_service.Customers;
@@ -9,11 +11,11 @@ namespace Order_service.tests.Customers
     public class CustomerServiceTests
     {
         private readonly CustomerService _customerService;
-        private readonly CustomerRepository _customerRepository;
+        private readonly ICustomerRepository _customerRepository;
 
         public CustomerServiceTests()
         {
-            _customerRepository = new CustomerRepository(new CustomerDatabase());
+            _customerRepository = Substitute.For<ICustomerRepository>();
             _customerService = new CustomerService(_customerRepository, new CustomerValidator());
         }
 
@@ -22,7 +24,9 @@ namespace Order_service.tests.Customers
         {
             Customer customer = CustomerTestBuilder.ACustomer().Build();
 
+            _customerRepository.Save(customer).Returns(customer);
             Customer createdCustomer = _customerService.CreateCustomer(customer);
+            _customerRepository.Get(createdCustomer.Id).Returns(customer);
 
             Assert.NotNull(createdCustomer);
             Assert.Equal(customer, _customerRepository.Get(createdCustomer.Id));

@@ -1,9 +1,15 @@
-﻿namespace Order_domain.Customers
+﻿using Order_domain.Orders;
+using Order_service.Data;
+
+namespace Order_domain.Customers
 {
-    public class CustomerRepository : Repository<Customer, CustomerDatabase>, ICustomerRepository
+    public class CustomerRepository : Repository<Customer>, ICustomerRepository
     {
-        public CustomerRepository(CustomerDatabase database)
-            : base(database)
+        private readonly OrderContext _context;
+        private CustomerRepository() { }
+
+        public CustomerRepository(OrderContext context)
+            : base(context)
         {
         }
     }

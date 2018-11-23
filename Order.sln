@@ -15,9 +15,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Order_domain.tests", "Order
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Order_service.tests", "Order_service.tests\Order_service.tests.csproj", "{85DEF2A6-C6C6-45F9-B347-BCDEEF1473F5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Order_api.tests", "Order_api.tests\Order_api.tests.csproj", "{2FFF104D-BF58-40CD-8CC3-4F3EB9A5D405}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Order_api.tests", "Order_api.tests\Order_api.tests.csproj", "{2FFF104D-BF58-40CD-8CC3-4F3EB9A5D405}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Order_api.integrationTests", "Order_api.integrationTests\Order_api.integrationTests.csproj", "{BC55990B-C51A-4D50-989B-7C9FEDBC535F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Order_api.integrationTests", "Order_api.integrationTests\Order_api.integrationTests.csproj", "{BC55990B-C51A-4D50-989B-7C9FEDBC535F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Order_IntegrationTests", "Order_IntegrationTestss\Order_IntegrationTests.csproj", "{E74922E0-7F9F-440E-A0C6-2EA74DA6BAB5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +59,10 @@ Global
 		{BC55990B-C51A-4D50-989B-7C9FEDBC535F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BC55990B-C51A-4D50-989B-7C9FEDBC535F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BC55990B-C51A-4D50-989B-7C9FEDBC535F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E74922E0-7F9F-440E-A0C6-2EA74DA6BAB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E74922E0-7F9F-440E-A0C6-2EA74DA6BAB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E74922E0-7F9F-440E-A0C6-2EA74DA6BAB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E74922E0-7F9F-440E-A0C6-2EA74DA6BAB5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

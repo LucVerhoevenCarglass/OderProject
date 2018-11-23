@@ -57,13 +57,12 @@ namespace Order_service.Orders
                 return GetOrdersOnlyContainingOrderItemsShippingToday();
             }
 
-            return _orderRepository.GetAll().Select(order => order.Value);
+            return _orderRepository.GetAll();
         }
 
         private IEnumerable<Order> GetOrdersOnlyContainingOrderItemsShippingToday()
         {
             return _orderRepository.GetAll()
-                                   .Select(x => x.Value)
                                    .Select(order => Order.OrderBuilder.Order().WithCustomerId(order.CustomerId)
                                                                           .WithId(order.Id)
                                                                           .WithOrderItems(GetOrderItemsShippingToday(order)).Build());

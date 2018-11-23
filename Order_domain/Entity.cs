@@ -6,6 +6,8 @@ namespace Order_domain
     {
         public Guid Id { get; private set; }
 
+        private Entity(){}
+
         protected Entity(Guid id)
         {
             Id = id;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Oder_infrastructure.builders;
+using Order_domain.Customers;
 using Order_domain.Items.Prices;
 using Order_domain.Orders.OrderItems;
 
@@ -9,9 +10,14 @@ namespace Order_domain.Orders
 {
     public sealed class Order : Entity
     {
-        public IEnumerable<OrderItem> OrderItems { get; set; }
+        //Todo : Ordercustomer wordt via CustomerKey opgehaald door context
         public Guid CustomerId { get; set; }
-        
+        public Customer OrderCustomer { get; set; }
+
+        //public ICollection<OrderItem> OrderItems { get; } = new List<OrderItem>();
+        public IEnumerable<OrderItem> OrderItems { get; set; }
+
+        private Order() : base(Guid.Empty) {}
         public Order(OrderBuilder orderBuilder)
             :base(orderBuilder.Id)
         {

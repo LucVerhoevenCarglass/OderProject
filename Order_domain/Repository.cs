@@ -1,42 +1,52 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Order_service.Data;
+
 
 namespace Order_domain
 {
-    public abstract class Repository<T, U>
+   public abstract class Repository<T>
         where T : Entity
-        where U : EntityDatabase<T>
     {
-
-        public U Database { get; set; }
-
-        protected Repository(U database)
+        private readonly OrderContext _context;
+        protected Repository()
         {
-            Database = database;
+        }
+
+        protected Repository(OrderContext context)
+        {
+            _context = context;
         }
 
         public T Save(T entity)
         {
             entity.GenerateId();
-            Database.Save(entity);
+            _context.Add(entity);
+            _context.SaveChanges();
             return entity;
         }
 
         public T Update(T entity)
         {
-            Database.Save(entity);
+            T getEntity = Get(entity.Id);
+            _context.Attach(getEntity);
+            getEntity = entity;
+            //_context.Update(entity)
+            _context.SaveChanges();
             return entity;
         }
 
-        public Dictionary<Guid, T> GetAll()
+        public List<T> GetAll()
         {
-            return Database.GetAll();
+            //TODO : Just for the info dit returned en dictonary
+            // return _context.Set<T>().ToDictionary(entityField => entityField.Id, entity => entity);
+            return _context.Set<T>().ToList();
         }
 
         public T Get(Guid entityId)
         {
-            return Database.GetAll().SingleOrDefault(x => x.Key == entityId).Value;
+            return _context.Set<T>().SingleOrDefault(entity => entity.Id == entityId);
         }
 
         /**
@@ -46,7 +56,7 @@ namespace Order_domain
          */
         public void Reset()
         {
-            Database.Reset();
+            //Database.Reset();
         }
     }
 }

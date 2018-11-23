@@ -11,6 +11,8 @@ namespace Order_domain.Items
         public Price Price { get; set; }
         public int AmountOfStock { get; set; }
 
+        private Item():base(Guid.Empty) {}
+
         public Item(ItemBuilder itemBuilder)
             : base(itemBuilder.Id)
         {

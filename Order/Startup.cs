@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -18,6 +19,7 @@ using Order_domain.Customers;
 using Order_domain.Items;
 using Order_domain.Orders;
 using Order_service.Customers;
+using Order_service.Data;
 using Order_service.Items;
 using Order_service.Orders;
 
@@ -25,6 +27,14 @@ namespace Order_api
 {
     public class Startup
     {
+        private string _connectionstring =
+            "Data Source = (LocalDb)\\MSSQLLocalDb; Initial Catalog = OrderOrm; Integrated Security = True;";
+
+        //private string _connectionstring =
+        //    "Data Source = .\\SQLExpress; Initial Catalog = OrderOrm; Integrated Security = True;";
+
+
+
         public Startup(ILoggerFactory logFactory, IConfiguration configuration)
         {
             ApplicationLogging.LoggerFactory = logFactory;
@@ -38,6 +48,8 @@ namespace Order_api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddSingleton(ConfigureDbContext());
 
             services.AddTransient<AddressMapper>();
             services.AddTransient<EmailMapper>();
@@ -53,27 +65,40 @@ namespace Order_api
 
             services.AddSingleton<ICustomerService, CustomerService>();
             services.AddSingleton<ICustomerRepository, CustomerRepository>();
-            services.AddSingleton<CustomerDatabase>();
-
+ 
             services.AddSingleton<IItemService, ItemService>();
             services.AddSingleton<IItemRepository, ItemRepository>();
-            services.AddSingleton<ItemDatabase>();
 
             services.AddSingleton<IOrderService, OrderService>();
-            services.AddSingleton<IOrderRepository, OrderRepository>();
-            services.AddSingleton<OrderDatabase>();
+            services.AddSingleton<IOrderRepository, OrderRepository > ();
+
+            services.AddTransient<OrderContext>();
 
             services.AddSwagger();
+            //services.AddSwaggerDocument();
+        }
+
+        protected virtual DbContextOptions<OrderContext> ConfigureDbContext()
+        {
+            return new DbContextOptionsBuilder<OrderContext>()
+                .UseSqlServer(_connectionstring)
+                .Options;
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            app.UseSwaggerUi3WithApiExplorer(settings =>
+            app.UseSwaggerUi3(settings =>
             {
                 settings.GeneratorSettings.DefaultPropertyNameHandling =
                     PropertyNameHandling.CamelCase;
             });
+
+            //app.UseSwaggerUi3WithApiExplorer(settings =>
+            //{
+            //    settings.GeneratorSettings.DefaultPropertyNameHandling =
+            //        PropertyNameHandling.CamelCase;
+            //});
 
             app.UseMiddleware(typeof(ErrorHandlingMiddleware));
             app.UseMvc();

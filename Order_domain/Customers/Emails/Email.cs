@@ -7,10 +7,11 @@ namespace Order_domain.Customers.Emails
 {
     public class Email
     {
-        public string LocalPart { get; }
-        public string Domain { get; }
-        public string Complete { get; }
+        public string LocalPart { get; private set; }
+        public string Domain { get; private set; }
+        public string Complete { get; private set; }
 
+        private Email(){}
         private Email(EmailBuilder emailBuilder)
         {
             LocalPart = emailBuilder.LocalPart;

@@ -9,7 +9,8 @@ namespace Order_domain.Customers
 
         Customer Update(Customer entity);
 
-        Dictionary<Guid, Customer> GetAll();
+        //Dictionary<Guid, Customer> GetAll();
+        List<Customer> GetAll();
 
         Customer Get(Guid entityId);
         

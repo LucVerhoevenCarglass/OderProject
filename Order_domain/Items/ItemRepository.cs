@@ -1,10 +1,13 @@
-﻿namespace Order_domain.Items
-{
-    public class ItemRepository : Repository<Item, ItemDatabase>, IItemRepository
-    {
+﻿using Order_service.Data;
 
-        public ItemRepository(ItemDatabase database)
-            : base(database)
+namespace Order_domain.Items
+{
+    public class ItemRepository : Repository<Item>, IItemRepository
+    {
+        private readonly OrderContext _context;
+
+        public ItemRepository(OrderContext context)
+            : base(context)
         {
         }
     }

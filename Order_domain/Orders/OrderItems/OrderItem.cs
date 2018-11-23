@@ -6,13 +6,20 @@ namespace Order_domain.Orders.OrderItems
 {
     public sealed class OrderItem
     {
+        //TODO : Nieuwe velden OderID, MainOrder
+        //TODO : OrderId moet ingevuld worden MainOrder wordt via Contextgetoond
+        public Guid OrderId { get; set; }
+        public Order MainOrder { get; set; }
         public Guid ItemId { get; set; }
         public Price ItemPrice { get; set; }
         public int OrderedAmount { get; set; }
         public DateTime ShippingDate { get; set; }
 
+        private OrderItem(){}
+
         public OrderItem(OrderItemBuilder orderItemBuilder)
         {
+            OrderId = orderItemBuilder.OrderId;
             ItemId = orderItemBuilder.ItemId;
             ItemPrice = orderItemBuilder.ItemPrice;
             OrderedAmount = orderItemBuilder.OrderedAmount;
@@ -44,6 +51,7 @@ namespace Order_domain.Orders.OrderItems
 
         public sealed class OrderItemBuilder : Builder<OrderItem>
         {
+            public Guid OrderId { get; set; }
             public Guid ItemId { get; set; }
             public Price ItemPrice { get; set; }
             public int OrderedAmount { get; set; }
@@ -57,6 +65,12 @@ namespace Order_domain.Orders.OrderItems
             public override OrderItem Build()
             {
                 return new OrderItem(this);
+            }
+
+            public OrderItemBuilder WithOrderId(Guid orderId)
+            {
+                OrderId = orderId;
+                return this;
             }
 
             public OrderItemBuilder WithItemId(Guid itemId)

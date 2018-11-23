@@ -48,7 +48,7 @@ namespace Order_service.Items
 
         public IEnumerable<Item> GetAllItems()
         {
-            return _itemRepository.GetAll().Select(x => x.Value);
+            return _itemRepository.GetAll();
         }
     }
 }

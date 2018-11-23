@@ -9,6 +9,7 @@ namespace Order_service.Customers
     {
         private readonly ICustomerRepository _customerRepository;
         private readonly CustomerValidator _customerValidator;
+
         
         public CustomerService(ICustomerRepository customerRepository, CustomerValidator customerValidator)
         {
@@ -27,7 +28,7 @@ namespace Order_service.Customers
 
         public IEnumerable<Customer> GetAllCustomers()
         {
-            return _customerRepository.GetAll().Select(customer => customer.Value);
+            return _customerRepository.GetAll();
         }
 
         public Customer GetCustomer(Guid id)

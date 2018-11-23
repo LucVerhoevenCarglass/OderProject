@@ -8,6 +8,10 @@ namespace Order_domain.Customers.PhoneNumbers
         public string Number { get; set; }
         public string CountryCallingCode { get; set; }
 
+        private PhoneNumber()
+        {
+            
+        }
         private PhoneNumber(PhoneNumberBuilder phoneNumberBuilder)
         {
             Number = phoneNumberBuilder.Number;

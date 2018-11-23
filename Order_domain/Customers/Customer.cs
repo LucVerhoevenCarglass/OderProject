@@ -11,10 +11,13 @@ namespace Order_domain.Customers
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public Email Email { get; set; }
-
         public Address Address { get; set; }
         public PhoneNumber PhoneNumber { get; set; }
 
+        private Customer():base(Guid.Empty)
+        {
+            
+        }
         public Customer(CustomerBuilder customerBuilder)
             :base(customerBuilder.Id)
         {

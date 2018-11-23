@@ -4,10 +4,13 @@ namespace Order_domain.Customers.Addresses
 {
     public class Address
     {
-        public string StreetName { get; }
-        public string HouseNumber { get; }
-        public string PostalCode { get; }
-        public string Country { get; }
+        public string StreetName { get; private set; }
+        public string HouseNumber { get; private set; }
+        public string PostalCode { get; private set; }
+        public string Country { get; private set; }
+
+
+        private Address(){}
 
         public Address(AddressBuilder addressBuilder)
         {

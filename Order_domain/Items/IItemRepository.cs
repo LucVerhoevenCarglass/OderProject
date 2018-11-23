@@ -9,7 +9,8 @@ namespace Order_domain.Items
 
         Item Update(Item entity);
 
-        Dictionary<Guid, Item> GetAll();
+        //Dictionary<Guid, Item> GetAll();
+        List<Item> GetAll();
 
         Item Get(Guid entityId);
 
